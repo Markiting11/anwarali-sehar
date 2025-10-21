@@ -5,6 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
+import localSeoAnalytics from "@/assets/local-seo-analytics.jpg";
+import linkBuildingNetwork from "@/assets/link-building-network.jpg";
+import googleMapsRankings from "@/assets/google-maps-rankings.jpg";
+import directoryWork from "@/assets/directory-submissions-work.jpg";
 
 const Portfolio = () => {
   const projects = [
@@ -18,6 +22,7 @@ const Portfolio = () => {
         "First page rankings for 15+ keywords",
       ],
       tags: ["Local SEO", "Google Maps", "Citations"],
+      image: googleMapsRankings,
     },
     {
       title: "Home Services Company",
@@ -29,6 +34,7 @@ const Portfolio = () => {
         "300% increase in organic traffic",
       ],
       tags: ["Link Building", "SEO", "Content Marketing"],
+      image: linkBuildingNetwork,
     },
     {
       title: "Legal Firm Directory Listings",
@@ -40,6 +46,7 @@ const Portfolio = () => {
         "40% increase in local search traffic",
       ],
       tags: ["Directory Submissions", "Citations", "Local SEO"],
+      image: directoryWork,
     },
     {
       title: "E-commerce Store SEO",
@@ -51,6 +58,7 @@ const Portfolio = () => {
         "Reduced bounce rate by 35%",
       ],
       tags: ["SEO Audit", "Link Building", "Content Strategy"],
+      image: localSeoAnalytics,
     },
     {
       title: "Medical Practice Optimization",
@@ -62,6 +70,7 @@ const Portfolio = () => {
         "4.9-star average rating achieved",
       ],
       tags: ["Local SEO", "Reputation Management", "GBP"],
+      image: googleMapsRankings,
     },
     {
       title: "Real Estate Agency",
@@ -73,6 +82,7 @@ const Portfolio = () => {
         "Built 75+ quality backlinks",
       ],
       tags: ["SEO", "Link Building", "Local SEO"],
+      image: linkBuildingNetwork,
     },
   ];
 
@@ -138,42 +148,51 @@ const Portfolio = () => {
             {projects.map((project, index) => (
               <Card
                 key={index}
-                className="p-6 hover:shadow-xl transition-shadow animate-fade-in hover-scale"
+                className="overflow-hidden hover:shadow-xl transition-shadow animate-fade-in hover-scale"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="mb-4">
-                  <Badge variant="secondary" className="mb-3">
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={project.image} 
+                    alt={`${project.title} - ${project.category}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent"></div>
+                  <Badge variant="secondary" className="absolute top-4 left-4">
                     {project.category}
                   </Badge>
+                </div>
+                
+                <div className="p-6">
                   <h3 className="text-xl font-semibold text-foreground mb-2">
                     {project.title}
                   </h3>
                   <p className="text-muted-foreground text-sm mb-4">
                     {project.description}
                   </p>
-                </div>
 
-                <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center">
-                    <TrendingUp size={16} className="mr-2 text-primary" />
-                    Key Results:
-                  </h4>
-                  <ul className="space-y-2">
-                    {project.results.map((result, idx) => (
-                      <li key={idx} className="text-sm text-muted-foreground flex items-start">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
-                        {result}
-                      </li>
+                  <div className="mb-4">
+                    <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center">
+                      <TrendingUp size={16} className="mr-2 text-primary" />
+                      Key Results:
+                    </h4>
+                    <ul className="space-y-2">
+                      {project.results.map((result, idx) => (
+                        <li key={idx} className="text-sm text-muted-foreground flex items-start">
+                          <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                          {result}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map((tag, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs">
+                        {tag}
+                      </Badge>
                     ))}
-                  </ul>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
+                  </div>
                 </div>
               </Card>
             ))}

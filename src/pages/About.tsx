@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import heroImage from "@/assets/about-hero-seo-expert.jpg";
+import growthMetrics from "@/assets/seo-growth-metrics.jpg";
 
 const About = () => {
   const certifications = [
@@ -27,8 +29,16 @@ const About = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-primary/5 via-accent/10 to-background">
-        <div className="container mx-auto px-4">
+      <section className="relative py-20 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={heroImage} 
+            alt="SEO Expert working on analytics and rankings" 
+            className="w-full h-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-accent/20 to-background/90"></div>
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center animate-fade-in">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               About Me
@@ -112,21 +122,30 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-foreground mb-12 text-center">My Expertise</h2>
-            <div className="space-y-6">
-              {skills.map((skill, index) => (
-                <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                  <div className="flex justify-between mb-2">
-                    <span className="font-medium text-foreground">{skill.name}</span>
-                    <span className="text-primary font-semibold">{skill.level}%</span>
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div className="space-y-6">
+                {skills.map((skill, index) => (
+                  <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <div className="flex justify-between mb-2">
+                      <span className="font-medium text-foreground">{skill.name}</span>
+                      <span className="text-primary font-semibold">{skill.level}%</span>
+                    </div>
+                    <div className="h-3 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-1000 ease-out"
+                        style={{ width: `${skill.level}%` }}
+                      ></div>
+                    </div>
                   </div>
-                  <div className="h-3 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-1000 ease-out"
-                      style={{ width: `${skill.level}%` }}
-                    ></div>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              <div className="animate-fade-in" style={{ animationDelay: "0.6s" }}>
+                <img 
+                  src={growthMetrics} 
+                  alt="SEO growth metrics and analytics dashboard" 
+                  className="rounded-lg shadow-xl w-full"
+                />
+              </div>
             </div>
           </div>
         </div>
