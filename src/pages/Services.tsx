@@ -259,9 +259,8 @@ const Services = () => {
               />
             </div>
           </div>
-          <div className="max-w-4xl mx-auto">
-            <div className="space-y-8">
-            <div className="space-y-8">
+          <div className="max-w-5xl mx-auto">
+            <div className="space-y-6">
               {[
                 {
                   step: "01",
@@ -286,21 +285,36 @@ const Services = () => {
               ].map((item, index) => (
                 <Card
                   key={index}
-                  className="p-6 md:p-8 hover:shadow-lg transition-shadow animate-fade-in"
+                  className="group relative overflow-hidden p-8 md:p-10 border-2 hover:border-primary/30 transition-all duration-300 hover:shadow-2xl animate-fade-in bg-gradient-to-br from-background via-background to-primary/5"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className="flex items-start space-x-6">
-                    <div className="text-4xl font-bold text-primary/30">{item.step}</div>
-                    <div>
-                      <h3 className="text-xl font-semibold text-foreground mb-2">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  
+                  <div className="relative flex items-start gap-8">
+                    <div className="flex-shrink-0">
+                      <div className="relative">
+                        <div className="text-7xl md:text-8xl font-bold bg-gradient-to-br from-primary/30 via-primary/20 to-primary/10 bg-clip-text text-transparent">
+                          {item.step}
+                        </div>
+                        <div className="absolute inset-0 text-7xl md:text-8xl font-bold text-primary/5 blur-sm">
+                          {item.step}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex-1 pt-2">
+                      <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
                         {item.title}
                       </h3>
-                      <p className="text-muted-foreground">{item.description}</p>
+                      <p className="text-lg text-muted-foreground leading-relaxed">
+                        {item.description}
+                      </p>
                     </div>
                   </div>
+                  
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary/0 via-primary/50 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Card>
               ))}
-              </div>
             </div>
           </div>
         </div>
