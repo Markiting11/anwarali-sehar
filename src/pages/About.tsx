@@ -1,4 +1,4 @@
-import { Award, BookOpen, TrendingUp, Users } from "lucide-react";
+import { Award, BookOpen, TrendingUp, Users, Target, Lightbulb, Rocket, CheckCircle2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -51,24 +51,87 @@ const About = () => {
       </section>
 
       {/* Story Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <Card className="p-8 md:p-12">
-              <h2 className="text-3xl font-bold text-foreground mb-6">My Journey</h2>
-              <div className="space-y-4 text-muted-foreground">
-                <p>
-                  I'm Anwar Ali, a dedicated Local SEO Expert and Digital Marketer with over 5 years of experience helping businesses dominate their local markets. My journey in digital marketing began with a passion for understanding how search engines work and how businesses can leverage them to grow.
-                </p>
-                <p>
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-transparent"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16 animate-fade-in">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">My Journey</h2>
+              <div className="h-1 w-24 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
+            </div>
+
+            {/* Introduction Card */}
+            <Card className="p-8 md:p-10 mb-8 border-l-4 border-l-primary shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in">
+              <div className="flex items-start gap-6">
+                <div className="hidden md:block w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-2xl flex-shrink-0 flex items-center justify-center shadow-lg">
+                  <Rocket className="text-primary-foreground" size={32} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-foreground mb-4">The Beginning</h3>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    I'm <span className="text-foreground font-semibold">Anwar Ali</span>, a dedicated Local SEO Expert and Digital Marketer with over <span className="text-primary font-semibold">5 years of experience</span> helping businesses dominate their local markets. My journey in digital marketing began with a passion for understanding how search engines work and how businesses can leverage them to grow.
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            {/* Expertise Cards Grid */}
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <Card className="p-8 hover:shadow-xl transition-all duration-300 border-t-4 border-t-accent animate-fade-in" style={{ animationDelay: "0.1s" }}>
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Target className="text-accent" size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground">Mastering the Craft</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed">
                   Through continuous learning and hands-on experience, I've mastered the art of Local SEO, specializing in Google Business Profile optimization, link building strategies, and comprehensive directory submissions. My expertise has helped numerous businesses achieve first-page rankings and significantly increase their online visibility.
                 </p>
-                <p>
+              </Card>
+
+              <Card className="p-8 hover:shadow-xl transition-all duration-300 border-t-4 border-t-primary animate-fade-in" style={{ animationDelay: "0.2s" }}>
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Award className="text-primary" size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground">Professional Excellence</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed">
                   I've completed professional training through DigiSkills, USAID, and UNDP programs, combining formal education with practical experience to deliver results that matter. As a top-rated professional on Fiverr, I've built a reputation for excellence, reliability, and measurable outcomes.
                 </p>
-                <p>
-                  My approach is simple: I focus on sustainable, white-hat SEO techniques that not only improve rankings but also enhance user experience and drive real business growth. Whether you're a local business looking to increase foot traffic or an online company aiming to dominate local search results, I have the expertise to make it happen.
-                </p>
+              </Card>
+            </div>
+
+            {/* Approach Card */}
+            <Card className="p-8 md:p-10 bg-gradient-to-br from-primary/5 to-accent/5 border-2 border-primary/20 shadow-xl animate-fade-in" style={{ animationDelay: "0.3s" }}>
+              <div className="flex items-start gap-6">
+                <div className="hidden md:block w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-2xl flex-shrink-0 flex items-center justify-center shadow-lg">
+                  <Lightbulb className="text-primary-foreground" size={32} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-foreground mb-4">My Approach</h3>
+                  <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+                    My approach is simple: I focus on sustainable, white-hat SEO techniques that not only improve rankings but also enhance user experience and drive real business growth.
+                  </p>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="text-primary flex-shrink-0 mt-1" size={20} />
+                      <span className="text-muted-foreground">Sustainable growth strategies</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="text-primary flex-shrink-0 mt-1" size={20} />
+                      <span className="text-muted-foreground">White-hat SEO techniques</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="text-primary flex-shrink-0 mt-1" size={20} />
+                      <span className="text-muted-foreground">Enhanced user experience</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="text-primary flex-shrink-0 mt-1" size={20} />
+                      <span className="text-muted-foreground">Measurable business growth</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </Card>
           </div>
