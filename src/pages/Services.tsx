@@ -8,12 +8,29 @@ import { Link } from "react-router-dom";
 import localSeoImage from "@/assets/local-seo-service.jpg";
 import linkBuildingImage from "@/assets/link-building-service.jpg";
 import directoryImage from "@/assets/directory-service.jpg";
+import localCitationsImage from "@/assets/local-citations-infographic.jpg";
 import seoServicesDiagram from "@/assets/seo-services-diagram.jpg";
 import gmbRankingsChart from "@/assets/gmb-rankings-chart.jpg";
 import gmbProfileLaptop from "@/assets/gmb-profile-laptop.jpg";
 
 const Services = () => {
   const mainServices = [
+    {
+      id: "local-citations",
+      icon: MapPin,
+      title: "Local Citations & NAP Management",
+      description: "Build authoritative local citations across top directories and platforms to boost your local search visibility and establish trust with search engines.",
+      image: localCitationsImage,
+      badge: "Top Priority Service",
+      features: [
+        "Citation building on 100+ trusted directories",
+        "NAP (Name, Address, Phone) consistency audit",
+        "Citation cleanup and duplicate removal",
+        "Industry-specific citation sources",
+        "Geo-targeted citation building",
+        "Monthly citation monitoring and reporting",
+      ],
+    },
     {
       id: "local-seo",
       icon: MapPin,
@@ -126,9 +143,9 @@ const Services = () => {
                         className="absolute inset-0 w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent"></div>
-                      <Badge className="absolute top-6 left-6 bg-background/90 text-foreground">
+                      <Badge className={`absolute top-6 left-6 ${service.badge ? 'bg-primary text-primary-foreground' : 'bg-background/90 text-foreground'}`}>
                         <service.icon className="mr-2" size={16} />
-                        Premium Service
+                        {service.badge || "Premium Service"}
                       </Badge>
                     </div>
                     <div className="p-8 lg:p-12 flex flex-col justify-center">
