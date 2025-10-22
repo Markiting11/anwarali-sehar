@@ -108,7 +108,7 @@ const Testimonials = () => {
                   <div className="text-sm text-muted-foreground">Average Rating</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-primary mb-2">100+</div>
+                  <div className="text-5xl font-bold text-primary mb-2">300+</div>
                   <div className="text-sm text-muted-foreground">Happy Clients</div>
                 </div>
                 <div className="text-center">
