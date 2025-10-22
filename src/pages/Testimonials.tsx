@@ -1,10 +1,18 @@
 import { Star, Quote } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import sarahJohnsonImg from "@/assets/testimonials/sarah-johnson.jpg";
+import michaelChenImg from "@/assets/testimonials/michael-chen.jpg";
+import emilyRodriguezImg from "@/assets/testimonials/emily-rodriguez.jpg";
+import davidThompsonImg from "@/assets/testimonials/david-thompson.jpg";
+import amandaWhiteImg from "@/assets/testimonials/amanda-white.jpg";
+import jamesMartinezImg from "@/assets/testimonials/james-martinez.jpg";
+import lisaAndersonImg from "@/assets/testimonials/lisa-anderson.jpg";
+import robertTaylorImg from "@/assets/testimonials/robert-taylor.jpg";
 
 const Testimonials = () => {
   const testimonials = [
@@ -15,6 +23,7 @@ const Testimonials = () => {
       rating: 5,
       text: "Anwar transformed our online presence! Our restaurant now appears at the top of Google Maps, and we've seen a 250% increase in new customers finding us online. His local SEO expertise is unmatched!",
       initials: "SJ",
+      image: sarahJohnsonImg,
     },
     {
       name: "Michael Chen",
@@ -23,6 +32,7 @@ const Testimonials = () => {
       rating: 5,
       text: "Working with Anwar was a game-changer for our business. The quality backlinks he built increased our domain authority significantly, and our organic traffic tripled within 6 months. Highly recommend!",
       initials: "MC",
+      image: michaelChenImg,
     },
     {
       name: "Emily Rodriguez",
@@ -31,6 +41,7 @@ const Testimonials = () => {
       rating: 5,
       text: "Anwar's directory submission service was incredibly thorough. Our law firm now has consistent listings across 100+ directories, and our local search visibility has improved dramatically. Professional and reliable!",
       initials: "ER",
+      image: emilyRodriguezImg,
     },
     {
       name: "David Thompson",
@@ -39,6 +50,7 @@ const Testimonials = () => {
       rating: 5,
       text: "The complete SEO overhaul Anwar provided doubled our organic revenue in just 4 months. His attention to detail and strategic approach to link building and content optimization delivered exceptional results.",
       initials: "DT",
+      image: davidThompsonImg,
     },
     {
       name: "Dr. Amanda White",
@@ -47,6 +59,7 @@ const Testimonials = () => {
       rating: 5,
       text: "Our patient inquiries increased by 500% after Anwar optimized our Google Business Profile and local SEO. He's knowledgeable, responsive, and truly cares about his clients' success.",
       initials: "AW",
+      image: amandaWhiteImg,
     },
     {
       name: "James Martinez",
@@ -55,6 +68,7 @@ const Testimonials = () => {
       rating: 5,
       text: "Anwar's SEO and link building campaign put us on the first page for our target neighborhoods. Our lead generation increased by 150%, and the quality of leads improved significantly. Worth every penny!",
       initials: "JM",
+      image: jamesMartinezImg,
     },
     {
       name: "Lisa Anderson",
@@ -63,6 +77,7 @@ const Testimonials = () => {
       rating: 5,
       text: "As a small business owner, I needed affordable but effective SEO. Anwar delivered beyond my expectations. My flower shop now ranks #1 locally, and orders have never been better!",
       initials: "LA",
+      image: lisaAndersonImg,
     },
     {
       name: "Robert Taylor",
@@ -71,6 +86,7 @@ const Testimonials = () => {
       rating: 5,
       text: "Anwar's technical SEO knowledge and ethical approach to link building set him apart. He's transparent, communicates clearly, and always delivers on his promises. A true professional!",
       initials: "RT",
+      image: robertTaylorImg,
     },
   ];
 
@@ -134,6 +150,7 @@ const Testimonials = () => {
                 <Quote className="absolute top-4 right-4 text-primary/10" size={48} />
                 <div className="flex items-center mb-4">
                   <Avatar className="h-12 w-12 mr-4">
+                    <AvatarImage src={testimonial.image} alt={`${testimonial.name} - ${testimonial.role}`} />
                     <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                       {testimonial.initials}
                     </AvatarFallback>
