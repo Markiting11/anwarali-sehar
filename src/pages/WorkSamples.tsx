@@ -8,6 +8,22 @@ import { Link } from "react-router-dom";
 const WorkSamples = () => {
   const samples = [
     {
+      title: "3000 Google Maps Citations - TechPro CNC",
+      description: "Comprehensive Google Maps citation building campaign featuring 3000+ strategic citations for enhanced local map pack rankings and geographic visibility.",
+      fileName: "3000_Google_Maps_Citations_TechPro_CNC.xlsx",
+      filePath: "/samples/3000_Google_Maps_Citations_TechPro_CNC.xlsx",
+      fileSize: "280 KB",
+      category: "Google Maps Citations",
+    },
+    {
+      title: "Profile Backlinks Campaign",
+      description: "High-quality profile backlink building report showcasing strategic profile creation across authoritative platforms to boost domain authority and search rankings.",
+      fileName: "Profile_Backlinks.xlsx",
+      filePath: "/samples/Profile_Backlinks.xlsx",
+      fileSize: "95 KB",
+      category: "Link Building",
+    },
+    {
       title: "200 Directories - Utility Contractor San Diego",
       description: "Comprehensive directory submission report for a utility contractor in San Diego. Includes 200+ high-quality directory listings with verified citations.",
       fileName: "200_Directories_Utility_Contractor_San_Diego.xlsx",

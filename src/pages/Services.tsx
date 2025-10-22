@@ -32,6 +32,21 @@ const Services = () => {
       ],
     },
     {
+      id: "google-maps-citations",
+      icon: MapPin,
+      title: "Google Maps Citations",
+      description: "Comprehensive Google Maps citation building service to boost your local map pack rankings and improve visibility in location-based searches.",
+      image: localCitationsImage,
+      features: [
+        "3000+ Google Maps citations for maximum visibility",
+        "Local pack ranking improvements",
+        "Geographic targeting optimization",
+        "Consistent NAP across all citations",
+        "Enhanced Google Maps presence",
+        "Detailed citation tracking reports",
+      ],
+    },
+    {
       id: "local-seo",
       icon: MapPin,
       title: "Local SEO Optimization",
