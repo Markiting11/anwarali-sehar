@@ -70,6 +70,7 @@ const Index = () => {
                     src={heroProfile}
                     alt="Anwar Ali - Local SEO Expert"
                     className="w-full group-hover:scale-105 transition-transform duration-500"
+                    fetchPriority="high"
                   />
                 </div>
               </div>
