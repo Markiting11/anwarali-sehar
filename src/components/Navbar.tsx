@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Home, User, Briefcase, FolderOpen, MessageCircle, FileText, Mail, Sparkles, Settings } from "lucide-react";
+import { Menu, X, Home, User, Briefcase, FolderOpen, MessageCircle, FileText, Mail, Sparkles, Settings, LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,11 +7,13 @@ import { supabase } from "@/integrations/supabase/client";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     const checkAdmin = async () => {
       const { data: { session } } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session);
       if (session) {
         const { data } = await supabase
           .from("user_roles")
@@ -20,6 +22,8 @@ const Navbar = () => {
           .eq("role", "admin")
           .maybeSingle();
         setIsAdmin(!!data);
+      } else {
+        setIsAdmin(false);
       }
     };
     checkAdmin();
@@ -30,6 +34,7 @@ const Navbar = () => {
           checkAdmin();
         } else {
           setIsAdmin(false);
+          setIsLoggedIn(false);
         }
       }
     );
@@ -91,6 +96,19 @@ const Navbar = () => {
                 Admin
               </Link>
             )}
+            {!isLoggedIn && (
+              <Link
+                to="/auth"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  isActive("/auth")
+                    ? "text-accent-foreground bg-accent shadow-sm"
+                    : "text-navbar-foreground/80 hover:text-navbar-foreground hover:bg-navbar-foreground/10"
+                }`}
+              >
+                <LogIn className="w-4 h-4" />
+                Sign In
+              </Link>
+            )}
             <Link to="/contact">
               <Button className="ml-4 shadow-md hover:shadow-lg transition-shadow bg-primary hover:bg-primary/90">
                 <Mail className="w-4 h-4 mr-2" />
@@ -141,6 +159,20 @@ const Navbar = () => {
               >
                 <Settings className="w-4 h-4" />
                 Admin
+              </Link>
+            )}
+            {!isLoggedIn && (
+              <Link
+                to="/auth"
+                onClick={() => setIsOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                  isActive("/auth")
+                    ? "text-accent-foreground bg-accent shadow-sm"
+                    : "text-navbar-foreground/80 hover:text-navbar-foreground hover:bg-navbar-foreground/10"
+                }`}
+              >
+                <LogIn className="w-4 h-4" />
+                Sign In
               </Link>
             )}
             <Link to="/contact" onClick={() => setIsOpen(false)}>
