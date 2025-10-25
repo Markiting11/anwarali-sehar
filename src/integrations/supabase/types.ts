@@ -23,9 +23,12 @@ export type Database = {
           featured_image_alt: string | null
           featured_image_url: string | null
           id: string
+          is_featured: boolean | null
           meta_description: string | null
           published: boolean | null
+          read_time: number | null
           slug: string
+          tags: string[] | null
           title: string
           updated_at: string | null
         }
@@ -37,9 +40,12 @@ export type Database = {
           featured_image_alt?: string | null
           featured_image_url?: string | null
           id?: string
+          is_featured?: boolean | null
           meta_description?: string | null
           published?: boolean | null
+          read_time?: number | null
           slug: string
+          tags?: string[] | null
           title: string
           updated_at?: string | null
         }
@@ -51,9 +57,12 @@ export type Database = {
           featured_image_alt?: string | null
           featured_image_url?: string | null
           id?: string
+          is_featured?: boolean | null
           meta_description?: string | null
           published?: boolean | null
+          read_time?: number | null
           slug?: string
+          tags?: string[] | null
           title?: string
           updated_at?: string | null
         }

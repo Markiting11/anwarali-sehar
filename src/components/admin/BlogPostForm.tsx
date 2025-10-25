@@ -21,6 +21,10 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
   const [metaDescription, setMetaDescription] = useState("");
   const [featuredImageUrl, setFeaturedImageUrl] = useState("");
   const [featuredImageAlt, setFeaturedImageAlt] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
+  const [isFeatured, setIsFeatured] = useState(false);
+  const [readTime, setReadTime] = useState(5);
   const [published, setPublished] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +37,9 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       setMetaDescription(post.meta_description || "");
       setFeaturedImageUrl(post.featured_image_url || "");
       setFeaturedImageAlt(post.featured_image_alt || "");
+      setTags(post.tags || []);
+      setIsFeatured(post.is_featured || false);
+      setReadTime(post.read_time || 5);
       setPublished(post.published || false);
     }
   }, [post]);
@@ -51,6 +58,17 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
     }
   };
 
+  const handleAddTag = () => {
+    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+      setTags([...tags, tagInput.trim()]);
+      setTagInput("");
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -67,6 +85,9 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
         meta_description: metaDescription,
         featured_image_url: featuredImageUrl,
         featured_image_alt: featuredImageAlt,
+        tags,
+        is_featured: isFeatured,
+        read_time: readTime,
         published,
         author_id: session.user.id
       };
@@ -96,6 +117,10 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       setMetaDescription("");
       setFeaturedImageUrl("");
       setFeaturedImageAlt("");
+      setTags([]);
+      setTagInput("");
+      setIsFeatured(false);
+      setReadTime(5);
       setPublished(false);
       onSuccess();
     } catch (error: any) {
@@ -183,6 +208,62 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
           onChange={(e) => setFeaturedImageAlt(e.target.value)}
           placeholder="Describe the image for SEO"
         />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="tags">Tags (SEO Keywords)</Label>
+        <div className="flex gap-2">
+          <Input
+            id="tags"
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+            placeholder="Add tag and press Enter"
+          />
+          <Button type="button" onClick={handleAddTag} variant="outline">
+            Add
+          </Button>
+        </div>
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {tags.map((tag) => (
+              <div
+                key={tag}
+                className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm flex items-center gap-2"
+              >
+                {tag}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveTag(tag)}
+                  className="hover:text-destructive"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="readTime">Reading Time (minutes)</Label>
+        <Input
+          id="readTime"
+          type="number"
+          value={readTime}
+          onChange={(e) => setReadTime(parseInt(e.target.value) || 5)}
+          min="1"
+          placeholder="5"
+        />
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="featured"
+          checked={isFeatured}
+          onCheckedChange={setIsFeatured}
+        />
+        <Label htmlFor="featured">Mark as Featured Post</Label>
       </div>
 
       <div className="flex items-center space-x-2">

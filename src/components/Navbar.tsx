@@ -1,11 +1,41 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Home, User, Briefcase, FolderOpen, MessageCircle, FileText, Mail, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, Home, User, Briefcase, FolderOpen, MessageCircle, FileText, Mail, Sparkles, Settings } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", session.user.id)
+          .eq("role", "admin")
+          .maybeSingle();
+        setIsAdmin(!!data);
+      }
+    };
+    checkAdmin();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session) {
+          checkAdmin();
+        } else {
+          setIsAdmin(false);
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const navItems = [
     { path: "/", label: "Home", icon: Home },
@@ -48,6 +78,19 @@ const Navbar = () => {
                 </Link>
               );
             })}
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  isActive("/admin")
+                    ? "text-accent-foreground bg-accent shadow-sm"
+                    : "text-navbar-foreground/80 hover:text-navbar-foreground hover:bg-navbar-foreground/10"
+                }`}
+              >
+                <Settings className="w-4 h-4" />
+                Admin
+              </Link>
+            )}
             <Link to="/contact">
               <Button className="ml-4 shadow-md hover:shadow-lg transition-shadow bg-primary hover:bg-primary/90">
                 <Mail className="w-4 h-4 mr-2" />
@@ -86,6 +129,20 @@ const Navbar = () => {
                 </Link>
               );
             })}
+            {isAdmin && (
+              <Link
+                to="/admin"
+                onClick={() => setIsOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                  isActive("/admin")
+                    ? "text-accent-foreground bg-accent shadow-sm"
+                    : "text-navbar-foreground/80 hover:text-navbar-foreground hover:bg-navbar-foreground/10"
+                }`}
+              >
+                <Settings className="w-4 h-4" />
+                Admin
+              </Link>
+            )}
             <Link to="/contact" onClick={() => setIsOpen(false)}>
               <Button className="w-full mt-3 shadow-md bg-primary hover:bg-primary/90">
                 <Mail className="w-4 h-4 mr-2" />

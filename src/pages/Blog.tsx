@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 interface BlogPost {
   id: string;
@@ -18,6 +19,9 @@ interface BlogPost {
   meta_description: string;
   featured_image_url: string;
   featured_image_alt: string;
+  tags: string[];
+  is_featured: boolean;
+  read_time: number;
   published: boolean;
   created_at: string;
 }
@@ -37,6 +41,7 @@ export default function Blog() {
         .from("blog_posts")
         .select("*")
         .eq("published", true)
+        .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -48,11 +53,16 @@ export default function Blog() {
     }
   };
 
-  const featuredPost = posts[0];
-  const otherPosts = posts.slice(1);
+  const featuredPost = posts.find(post => post.is_featured) || posts[0];
+  const otherPosts = posts.filter(post => post.id !== featuredPost?.id);
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>SEO Blog & Insights - Expert Local SEO Tips | Anwar Ali</title>
+        <meta name="description" content="Expert SEO tips, case studies, and insights to help you master local SEO and grow your online presence. Learn from proven strategies." />
+        <meta name="keywords" content="SEO blog, local SEO tips, SEO insights, SEO case studies, digital marketing blog" />
+      </Helmet>
       <Navbar />
 
       {/* Hero Section */}
@@ -111,7 +121,18 @@ export default function Blog() {
                             <Calendar size={16} className="mr-2" />
                             {new Date(featuredPost.created_at).toLocaleDateString()}
                           </div>
+                          <div className="flex items-center">
+                            <Clock size={16} className="mr-2" />
+                            {featuredPost.read_time} min read
+                          </div>
                         </div>
+                        {featuredPost.tags && featuredPost.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {featuredPost.tags.map((tag) => (
+                              <Badge key={tag} variant="secondary">{tag}</Badge>
+                            ))}
+                          </div>
+                        )}
                         <Button className="w-fit">
                           Read Article
                           <ArrowRight className="ml-2" size={16} />
@@ -151,9 +172,16 @@ export default function Blog() {
                           </div>
                           <div className="flex items-center">
                             <Clock size={14} className="mr-1" />
-                            5 min read
+                            {post.read_time} min read
                           </div>
                         </div>
+                        {post.tags && post.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {post.tags.slice(0, 3).map((tag) => (
+                              <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+                            ))}
+                          </div>
+                        )}
                         <Button variant="ghost" size="sm" className="w-full">
                           Read More
                           <ArrowRight className="ml-2" size={14} />
