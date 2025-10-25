@@ -94,7 +94,7 @@ export default function Blog() {
             <>
               {/* Featured Post */}
               {featuredPost && (
-                <div className="mb-16">
+                <Link to={`/blog/${featuredPost.slug}`} className="block mb-16">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="h-px flex-1 bg-border"></div>
                     <span className="text-sm text-muted-foreground">Featured Post</span>
@@ -140,7 +140,7 @@ export default function Blog() {
                       </div>
                     </div>
                   </Card>
-                </div>
+                </Link>
               )}
 
               {/* All Posts Grid */}
@@ -150,44 +150,46 @@ export default function Blog() {
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {otherPosts.map((post) => (
-                    <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group">
-                      {post.featured_image_url && (
-                        <img 
-                          src={post.featured_image_url} 
-                          alt={post.featured_image_alt || post.title}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      )}
-                      <div className="p-6">
-                        <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                          {post.title}
-                        </h3>
-                        <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                          {post.excerpt || post.content.slice(0, 100) + "..."}
-                        </p>
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
-                          <div className="flex items-center">
-                            <Calendar size={14} className="mr-1" />
-                            {new Date(post.created_at).toLocaleDateString()}
-                          </div>
-                          <div className="flex items-center">
-                            <Clock size={14} className="mr-1" />
-                            {post.read_time} min read
-                          </div>
-                        </div>
-                        {post.tags && post.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {post.tags.slice(0, 3).map((tag) => (
-                              <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
-                            ))}
-                          </div>
+                    <Link key={post.id} to={`/blog/${post.slug}`} className="block">
+                      <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group h-full">
+                        {post.featured_image_url && (
+                          <img 
+                            src={post.featured_image_url} 
+                            alt={post.featured_image_alt || post.title}
+                            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
                         )}
-                        <Button variant="ghost" size="sm" className="w-full">
-                          Read More
-                          <ArrowRight className="ml-2" size={14} />
-                        </Button>
-                      </div>
-                    </Card>
+                        <div className="p-6">
+                          <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                            {post.title}
+                          </h3>
+                          <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
+                            {post.excerpt || post.content.slice(0, 100) + "..."}
+                          </p>
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
+                            <div className="flex items-center">
+                              <Calendar size={14} className="mr-1" />
+                              {new Date(post.created_at).toLocaleDateString()}
+                            </div>
+                            <div className="flex items-center">
+                              <Clock size={14} className="mr-1" />
+                              {post.read_time} min read
+                            </div>
+                          </div>
+                          {post.tags && post.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              {post.tags.slice(0, 3).map((tag) => (
+                                <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+                              ))}
+                            </div>
+                          )}
+                          <Button variant="ghost" size="sm" className="w-full">
+                            Read More
+                            <ArrowRight className="ml-2" size={14} />
+                          </Button>
+                        </div>
+                      </Card>
+                    </Link>
                   ))}
                 </div>
               </div>
