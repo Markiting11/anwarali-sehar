@@ -166,15 +166,19 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="content">Content *</Label>
+        <Label htmlFor="content">Content * (Supports Markdown)</Label>
         <Textarea
           id="content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           required
-          placeholder="Write your post content"
-          rows={6}
+          placeholder="Write your post content using Markdown formatting:&#10;&#10;# Heading 1&#10;## Heading 2&#10;### Heading 3&#10;&#10;**Bold text**&#10;*Italic text*&#10;&#10;[Link text](https://example.com)&#10;&#10;- List item 1&#10;- List item 2"
+          rows={12}
+          className="font-mono text-sm"
         />
+        <p className="text-xs text-muted-foreground">
+          Use Markdown formatting: # for headings, **bold**, [links](url), - for lists
+        </p>
       </div>
 
       <div className="space-y-2">
