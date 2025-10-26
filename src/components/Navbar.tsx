@@ -65,21 +65,21 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center space-x-1 h-full">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                     isActive(item.path)
                       ? "text-accent-foreground bg-accent shadow-sm"
                       : "text-navbar-foreground/80 hover:text-navbar-foreground hover:bg-navbar-foreground/10"
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  {item.label}
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <span className="leading-none">{item.label}</span>
                 </Link>
               );
             })}
