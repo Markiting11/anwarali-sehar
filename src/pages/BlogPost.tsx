@@ -120,11 +120,11 @@ const BlogPost = () => {
 
           {/* Featured Image */}
           {post.featured_image_url && (
-            <div className="mb-8 rounded-lg overflow-hidden">
+            <div className="mb-8 rounded-2xl overflow-hidden shadow-lg">
               <img
                 src={post.featured_image_url}
                 alt={post.featured_image_alt || post.title}
-                className="w-full h-[400px] object-cover"
+                className="w-full h-auto max-h-[500px] object-cover"
               />
             </div>
           )}
@@ -166,11 +166,19 @@ const BlogPost = () => {
           </header>
 
           {/* Article Content */}
-          <div className="prose prose-lg max-w-none">
-            <div className="whitespace-pre-wrap leading-relaxed">
-              {post.content}
-            </div>
-          </div>
+          <div 
+            className="prose prose-lg max-w-none dark:prose-invert
+              prose-headings:font-bold prose-headings:text-foreground
+              prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl
+              prose-p:text-muted-foreground prose-p:leading-relaxed
+              prose-strong:text-foreground prose-strong:font-bold
+              prose-a:text-primary prose-a:underline hover:prose-a:text-primary/80
+              prose-ul:text-muted-foreground prose-ol:text-muted-foreground
+              prose-li:marker:text-primary
+              prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground
+              prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:rounded"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         </div>
       </article>
 
