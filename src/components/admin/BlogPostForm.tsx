@@ -21,12 +21,15 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
   const [metaDescription, setMetaDescription] = useState("");
   const [featuredImageUrl, setFeaturedImageUrl] = useState("");
   const [featuredImageAlt, setFeaturedImageAlt] = useState("");
+  const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [isFeatured, setIsFeatured] = useState(false);
   const [readTime, setReadTime] = useState(5);
   const [published, setPublished] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (post) {
@@ -37,6 +40,7 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       setMetaDescription(post.meta_description || "");
       setFeaturedImageUrl(post.featured_image_url || "");
       setFeaturedImageAlt(post.featured_image_alt || "");
+      setImagePreview(post.featured_image_url || "");
       setTags(post.tags || []);
       setIsFeatured(post.is_featured || false);
       setReadTime(post.read_time || 5);
@@ -69,6 +73,55 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
     setTags(tags.filter(tag => tag !== tagToRemove));
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFeaturedImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFeaturedImageFile(null);
+    setImagePreview("");
+    setFeaturedImageUrl("");
+  };
+
+  const uploadImage = async () => {
+    if (!featuredImageFile) return featuredImageUrl;
+
+    setUploading(true);
+    try {
+      const fileExt = featuredImageFile.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError, data } = await supabase.storage
+        .from('blog-images')
+        .upload(filePath, featuredImageFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('blog-images')
+        .getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (error: any) {
+      toast.error("Failed to upload image");
+      throw error;
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -77,13 +130,19 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
 
+      // Upload image if a file is selected
+      let imageUrl = featuredImageUrl;
+      if (featuredImageFile) {
+        imageUrl = await uploadImage();
+      }
+
       const postData = {
         title,
         slug,
         content,
         excerpt,
         meta_description: metaDescription,
-        featured_image_url: featuredImageUrl,
+        featured_image_url: imageUrl,
         featured_image_alt: featuredImageAlt,
         tags,
         is_featured: isFeatured,
@@ -117,6 +176,8 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       setMetaDescription("");
       setFeaturedImageUrl("");
       setFeaturedImageAlt("");
+      setFeaturedImageFile(null);
+      setImagePreview("");
       setTags([]);
       setTagInput("");
       setIsFeatured(false);
@@ -193,25 +254,71 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="featuredImage">Featured Image URL</Label>
-        <Input
-          id="featuredImage"
-          value={featuredImageUrl}
-          onChange={(e) => setFeaturedImageUrl(e.target.value)}
-          placeholder="https://example.com/image.jpg"
-          type="url"
-        />
-      </div>
+      <div className="space-y-3">
+        <Label>Featured Image</Label>
+        
+        {/* Image Preview */}
+        {imagePreview && (
+          <div className="relative w-full h-48 rounded-lg overflow-hidden border border-border">
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="w-full h-full object-cover"
+            />
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              className="absolute top-2 right-2"
+              onClick={handleRemoveImage}
+            >
+              Remove
+            </Button>
+          </div>
+        )}
 
-      <div className="space-y-2">
-        <Label htmlFor="imageAlt">Featured Image Alt Text (SEO)</Label>
-        <Input
-          id="imageAlt"
-          value={featuredImageAlt}
-          onChange={(e) => setFeaturedImageAlt(e.target.value)}
-          placeholder="Describe the image for SEO"
-        />
+        {/* File Upload Button */}
+        <div className="flex gap-2">
+          <Input
+            id="imageFile"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="flex-1"
+          />
+        </div>
+
+        {/* OR URL Input */}
+        <div className="space-y-2">
+          <Label htmlFor="featuredImageUrl" className="text-xs text-muted-foreground">
+            Or paste image URL:
+          </Label>
+          <Input
+            id="featuredImageUrl"
+            value={featuredImageUrl}
+            onChange={(e) => {
+              setFeaturedImageUrl(e.target.value);
+              setImagePreview(e.target.value);
+            }}
+            placeholder="https://example.com/image.jpg"
+            type="url"
+          />
+        </div>
+
+        {/* Alt Text */}
+        <div className="space-y-2">
+          <Label htmlFor="imageAlt">Image Alt Text (SEO) *</Label>
+          <Input
+            id="imageAlt"
+            value={featuredImageAlt}
+            onChange={(e) => setFeaturedImageAlt(e.target.value)}
+            placeholder="Describe the image for accessibility and SEO"
+          />
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          📝 Tip: Upload an image or paste a URL. Alt text improves SEO and accessibility.
+        </p>
       </div>
 
       <div className="space-y-2">
@@ -280,8 +387,8 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       </div>
 
       <div className="flex gap-2">
-        <Button type="submit" disabled={loading} className="flex-1">
-          {loading ? "Saving..." : post ? "Update Post" : "Create Post"}
+        <Button type="submit" disabled={loading || uploading} className="flex-1">
+          {uploading ? "Uploading Image..." : loading ? "Saving..." : post ? "Update Post" : "Create Post"}
         </Button>
         {post && (
           <Button type="button" variant="outline" onClick={onCancel}>
