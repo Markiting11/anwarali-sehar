@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Mail, MessageSquare, Linkedin, MapPin, Send, ArrowUpRight, HelpCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,11 +14,65 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().trim().email("Invalid email address").max(255),
+  phone: z.string().trim().max(20).optional(),
+  service: z.string().min(1, "Please select a service"),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(1000),
+});
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    service: "",
+    message: "",
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Message sent! I'll get back to you within 24 hours.");
+    
+    // Validate form data
+    try {
+      contactSchema.parse(formData);
+      
+      // Format WhatsApp message
+      const whatsappNumber = "923459842097";
+      const message = `*New Contact Form Submission*
+
+*Name:* ${formData.name}
+*Email:* ${formData.email}
+*Phone:* ${formData.phone || "Not provided"}
+*Service:* ${formData.service}
+
+*Message:*
+${formData.message}`;
+
+      // Open WhatsApp with pre-filled message
+      const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, "_blank");
+      
+      toast.success("Opening WhatsApp to send your message!");
+      
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        service: "",
+        message: "",
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+      } else {
+        toast.error("Please fill out all required fields correctly.");
+      }
+    }
   };
 
   const contactInfo = [
@@ -84,6 +139,8 @@ const Contact = () => {
                       placeholder="Your name"
                       required
                       className="mt-2"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
                   </div>
                   <div>
@@ -94,6 +151,8 @@ const Contact = () => {
                       placeholder="your.email@example.com"
                       required
                       className="mt-2"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
                   <div>
@@ -103,6 +162,8 @@ const Contact = () => {
                       type="tel"
                       placeholder="+1 (555) 000-0000"
                       className="mt-2"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     />
                   </div>
                   <div>
@@ -111,14 +172,16 @@ const Contact = () => {
                       id="service"
                       className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-2"
                       required
+                      value={formData.service}
+                      onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                     >
                       <option value="">Select a service</option>
-                      <option value="local-seo">Local SEO</option>
-                      <option value="link-building">Link Building</option>
-                      <option value="directory">Directory Submissions</option>
-                      <option value="full-seo">Complete SEO Campaign</option>
-                      <option value="consultation">SEO Consultation</option>
-                      <option value="other">Other</option>
+                      <option value="Local SEO">Local SEO</option>
+                      <option value="Link Building">Link Building</option>
+                      <option value="Directory Submissions">Directory Submissions</option>
+                      <option value="Complete SEO Campaign">Complete SEO Campaign</option>
+                      <option value="SEO Consultation">SEO Consultation</option>
+                      <option value="Other">Other</option>
                     </select>
                   </div>
                   <div>
@@ -129,6 +192,8 @@ const Contact = () => {
                       rows={6}
                       required
                       className="mt-2"
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     />
                   </div>
                   <Button type="submit" size="lg" className="w-full">
