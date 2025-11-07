@@ -22,6 +22,7 @@ interface BlogPost {
   featured_image_url: string | null;
   featured_image_alt: string | null;
   tags: string[] | null;
+  category: string | null;
   read_time: number | null;
   created_at: string;
   published: boolean;
@@ -156,6 +157,15 @@ const BlogPost = () => {
               )}
             </div>
 
+            {/* Category */}
+            {post.category && (
+              <div className="mb-3">
+                <Badge variant="default" className="text-sm">
+                  {post.category}
+                </Badge>
+              </div>
+            )}
+
             {/* Tags */}
             {post.tags && post.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
@@ -169,48 +179,62 @@ const BlogPost = () => {
           </header>
 
           {/* Article Content */}
-          <div 
-            className="prose prose-lg max-w-none dark:prose-invert
-              prose-headings:font-bold prose-headings:text-foreground
-              prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-8 prose-h1:font-extrabold
-              prose-h2:text-3xl prose-h2:mb-4 prose-h2:mt-6 prose-h2:font-bold
-              prose-h3:text-2xl prose-h3:mb-3 prose-h3:mt-5 prose-h3:font-bold
-              prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:mb-4
-              prose-strong:text-foreground prose-strong:font-extrabold
-              prose-em:italic prose-em:text-muted-foreground
-              prose-a:text-blue-600 prose-a:underline prose-a:font-medium hover:prose-a:text-blue-800
-              dark:prose-a:text-blue-400 dark:hover:prose-a:text-blue-300
-              prose-ul:text-muted-foreground prose-ul:mb-4 prose-ul:list-disc prose-ul:ml-6
-              prose-ol:text-muted-foreground prose-ol:mb-4 prose-ol:list-decimal prose-ol:ml-6
-              prose-li:mb-2 prose-li:marker:text-primary
-              prose-blockquote:border-l-4 prose-blockquote:border-l-primary prose-blockquote:pl-4 
-              prose-blockquote:text-muted-foreground prose-blockquote:italic prose-blockquote:my-4
-              prose-code:text-primary prose-code:bg-muted prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:font-mono
-              prose-pre:bg-muted prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto
-              prose-img:rounded-lg prose-img:shadow-md prose-img:my-6"
-          >
+          <div className="max-w-none">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeRaw]}
               components={{
-                h1: ({ node, ...props }) => <h1 className="font-extrabold text-4xl mb-6 mt-8 text-foreground" {...props} />,
-                h2: ({ node, ...props }) => <h2 className="font-bold text-3xl mb-4 mt-6 text-foreground" {...props} />,
-                h3: ({ node, ...props }) => <h3 className="font-bold text-2xl mb-3 mt-5 text-foreground" {...props} />,
-                h4: ({ node, ...props }) => <h4 className="font-bold text-xl mb-2 mt-4 text-foreground" {...props} />,
-                p: ({ node, ...props }) => <p className="mb-4 leading-relaxed text-muted-foreground" {...props} />,
-                strong: ({ node, ...props }) => <strong className="font-extrabold text-foreground" {...props} />,
-                em: ({ node, ...props }) => <em className="italic text-muted-foreground" {...props} />,
-                a: ({ node, ...props }) => (
-                  <a 
-                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline font-medium cursor-pointer" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    {...props} 
+                h1: ({ node, ...props }) => (
+                  <h1 className="text-4xl font-extrabold mb-6 mt-8 text-foreground" {...props} />
+                ),
+                h2: ({ node, ...props }) => (
+                  <h2 className="text-3xl font-bold mb-4 mt-6 text-foreground" {...props} />
+                ),
+                h3: ({ node, ...props }) => (
+                  <h3 className="text-2xl font-bold mb-3 mt-5 text-foreground" {...props} />
+                ),
+                h4: ({ node, ...props }) => (
+                  <h4 className="text-xl font-bold mb-2 mt-4 text-foreground" {...props} />
+                ),
+                p: ({ node, ...props }) => (
+                  <p className="mb-4 leading-relaxed text-muted-foreground" {...props} />
+                ),
+                strong: ({ node, ...props }) => (
+                  <strong className="font-extrabold text-foreground" {...props} />
+                ),
+                em: ({ node, ...props }) => (
+                  <em className="italic text-muted-foreground" {...props} />
+                ),
+                a: ({ node, href, ...props }) => (
+                  <a
+                    href={href}
+                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline font-medium cursor-pointer transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    {...props}
                   />
                 ),
-                ul: ({ node, ...props }) => <ul className="list-disc ml-6 mb-4 space-y-2" {...props} />,
-                ol: ({ node, ...props }) => <ol className="list-decimal ml-6 mb-4 space-y-2" {...props} />,
-                li: ({ node, ...props }) => <li className="mb-2 text-muted-foreground" {...props} />,
+                ul: ({ node, ...props }) => (
+                  <ul className="list-disc ml-6 mb-4 space-y-2 text-muted-foreground" {...props} />
+                ),
+                ol: ({ node, ...props }) => (
+                  <ol className="list-decimal ml-6 mb-4 space-y-2 text-muted-foreground" {...props} />
+                ),
+                li: ({ node, ...props }) => (
+                  <li className="mb-2" {...props} />
+                ),
+                img: ({ node, ...props }) => (
+                  <img className="rounded-lg shadow-md my-6 w-full h-auto" {...props} />
+                ),
+                blockquote: ({ node, ...props }) => (
+                  <blockquote className="border-l-4 border-primary pl-4 italic text-muted-foreground my-4" {...props} />
+                ),
+                code: ({ node, inline, ...props }: any) =>
+                  inline ? (
+                    <code className="bg-muted text-primary px-2 py-1 rounded font-mono text-sm" {...props} />
+                  ) : (
+                    <code className="block bg-muted p-4 rounded-lg overflow-x-auto font-mono text-sm" {...props} />
+                  ),
               }}
             >
               {post.content}

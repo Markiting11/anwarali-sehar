@@ -19,6 +19,7 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
   const [content, setContent] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
+  const [category, setCategory] = useState("");
   const [featuredImageUrl, setFeaturedImageUrl] = useState("");
   const [featuredImageAlt, setFeaturedImageAlt] = useState("");
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
@@ -30,6 +31,7 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
   const [published, setPublished] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const contentTextareaRef = useState<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     if (post) {
@@ -38,6 +40,7 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       setContent(post.content || "");
       setExcerpt(post.excerpt || "");
       setMetaDescription(post.meta_description || "");
+      setCategory(post.category || "");
       setFeaturedImageUrl(post.featured_image_url || "");
       setFeaturedImageAlt(post.featured_image_alt || "");
       setImagePreview(post.featured_image_url || "");
@@ -91,18 +94,15 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
     setFeaturedImageUrl("");
   };
 
-  const uploadImage = async () => {
-    if (!featuredImageFile) return featuredImageUrl;
-
-    setUploading(true);
+  const uploadImage = async (file: File) => {
     try {
-      const fileExt = featuredImageFile.name.split('.').pop();
+      const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      const { error: uploadError, data } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('blog-images')
-        .upload(filePath, featuredImageFile, {
+        .upload(filePath, file, {
           cacheControl: '3600',
           upsert: false
         });
@@ -117,6 +117,39 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
     } catch (error: any) {
       toast.error("Failed to upload image");
       throw error;
+    }
+  };
+
+  const handleInlineImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const imageUrl = await uploadImage(file);
+      const markdownImage = `\n![Image description](${imageUrl})\n`;
+      
+      // Insert at cursor position or append
+      const textarea = document.getElementById('content') as HTMLTextAreaElement;
+      if (textarea) {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const newContent = content.substring(0, start) + markdownImage + content.substring(end);
+        setContent(newContent);
+        
+        // Reset cursor position
+        setTimeout(() => {
+          textarea.focus();
+          textarea.setSelectionRange(start + markdownImage.length, start + markdownImage.length);
+        }, 0);
+      } else {
+        setContent(content + markdownImage);
+      }
+      
+      toast.success("Image uploaded and inserted!");
+      e.target.value = ""; // Reset input
+    } catch (error) {
+      console.error(error);
     } finally {
       setUploading(false);
     }
@@ -133,7 +166,9 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       // Upload image if a file is selected
       let imageUrl = featuredImageUrl;
       if (featuredImageFile) {
-        imageUrl = await uploadImage();
+        setUploading(true);
+        imageUrl = await uploadImage(featuredImageFile);
+        setUploading(false);
       }
 
       const postData = {
@@ -142,6 +177,7 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
         content,
         excerpt,
         meta_description: metaDescription,
+        category,
         featured_image_url: imageUrl,
         featured_image_alt: featuredImageAlt,
         tags,
@@ -174,6 +210,7 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       setContent("");
       setExcerpt("");
       setMetaDescription("");
+      setCategory("");
       setFeaturedImageUrl("");
       setFeaturedImageAlt("");
       setFeaturedImageFile(null);
@@ -216,6 +253,16 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       </div>
 
       <div className="space-y-2">
+        <Label htmlFor="category">Category</Label>
+        <Input
+          id="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          placeholder="e.g., Local SEO, Link Building, Google Maps"
+        />
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="excerpt">Excerpt</Label>
         <Textarea
           id="excerpt"
@@ -233,13 +280,32 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           required
-          placeholder="Write your post content using Markdown formatting:&#10;&#10;# Heading 1&#10;## Heading 2&#10;### Heading 3&#10;&#10;**Bold text**&#10;*Italic text*&#10;&#10;[Link text](https://example.com)&#10;&#10;- List item 1&#10;- List item 2"
+          placeholder="Write your post content using Markdown formatting:&#10;&#10;# Heading 1&#10;## Heading 2&#10;### Heading 3&#10;&#10;**Bold text**&#10;*Italic text*&#10;&#10;[Link text](https://example.com)&#10;&#10;- List item 1&#10;- List item 2&#10;&#10;![Image](url)"
           rows={12}
           className="font-mono text-sm"
         />
-        <p className="text-xs text-muted-foreground">
-          Use Markdown formatting: # for headings, **bold**, [links](url), - for lists
-        </p>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span>Use Markdown formatting: # for headings, **bold**, [links](url), - for lists</span>
+        </div>
+        <div className="flex gap-2 items-center">
+          <Label htmlFor="inlineImage" className="cursor-pointer">
+            <Button type="button" variant="outline" size="sm" disabled={uploading} asChild>
+              <span>
+                {uploading ? "Uploading..." : "📎 Insert Image"}
+              </span>
+            </Button>
+          </Label>
+          <Input
+            id="inlineImage"
+            type="file"
+            accept="image/*"
+            onChange={handleInlineImageUpload}
+            className="hidden"
+          />
+          <span className="text-xs text-muted-foreground">
+            Upload image to insert into content
+          </span>
+        </div>
       </div>
 
       <div className="space-y-2">
