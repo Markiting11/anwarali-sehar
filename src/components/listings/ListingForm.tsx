@@ -43,7 +43,7 @@ const listingSchema = z.object({
   meta_title: z.string().optional(),
   meta_description: z.string().optional(),
   keywords: z.string().optional(),
-  is_published: z.boolean().default(false),
+  is_published: z.boolean().default(true),
 });
 
 type ListingFormData = z.infer<typeof listingSchema>;
@@ -71,7 +71,7 @@ export const ListingForm = () => {
   } = useForm<ListingFormData>({
     resolver: zodResolver(listingSchema),
     defaultValues: {
-      is_published: false,
+      is_published: true,
     },
   });
 
@@ -188,8 +188,12 @@ export const ListingForm = () => {
 
   const onSubmit = async (data: ListingFormData) => {
     setIsSubmitting(true);
+    console.log("Starting listing submission...", { is_published: data.is_published });
+    
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      console.log("User check:", user ? `Logged in as ${user.email}` : "Not logged in");
+      
       if (!user) {
         toast.error("You must be logged in to create a listing");
         navigate("/auth");
@@ -203,7 +207,7 @@ export const ListingForm = () => {
         ? data.keywords.split(",").map((k) => k.trim())
         : [];
 
-      const { error } = await supabase.from("business_listings").insert({
+      const listingData = {
         user_id: user.id,
         category: data.category,
         title: data.title,
@@ -224,15 +228,27 @@ export const ListingForm = () => {
         meta_description: data.meta_description,
         keywords: keywordsArray,
         is_published: data.is_published,
-      });
+      };
 
-      if (error) throw error;
+      console.log("Inserting listing:", listingData);
 
+      const { error, data: insertedData } = await supabase
+        .from("business_listings")
+        .insert(listingData)
+        .select();
+
+      if (error) {
+        console.error("Database error:", error);
+        throw error;
+      }
+
+      console.log("Listing created successfully:", insertedData);
       localStorage.removeItem("listing-draft");
-      toast.success("Listing created successfully!");
+      toast.success("Listing published successfully!");
       navigate("/business-listings");
     } catch (error: any) {
-      toast.error(error.message);
+      console.error("Submission error:", error);
+      toast.error(error.message || "Failed to create listing. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

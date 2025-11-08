@@ -1,20 +1,27 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ListingForm } from "@/components/listings/ListingForm";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { User } from "lucide-react";
 
 const AddBusinessListing = () => {
   const navigate = useNavigate();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         navigate("/auth");
+      } else {
+        setUserEmail(user.email || null);
       }
+      setIsLoading(false);
     };
     checkAuth();
   }, [navigate]);
@@ -39,6 +46,15 @@ const AddBusinessListing = () => {
                 Fill out the form below to add your business to our directory.
                 All fields marked with * are required.
               </p>
+              
+              {!isLoading && userEmail && (
+                <Alert className="mt-4">
+                  <User className="h-4 w-4" />
+                  <AlertDescription>
+                    Logged in as: <strong>{userEmail}</strong>
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
             <ListingForm />
           </div>
