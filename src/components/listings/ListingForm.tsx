@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -56,11 +57,12 @@ const STEPS = [
 ];
 
 export const ListingForm = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const navigate = useNavigate();
 
   const {
     register,
@@ -244,8 +246,18 @@ export const ListingForm = () => {
 
       console.log("Listing created successfully:", insertedData);
       localStorage.removeItem("listing-draft");
-      toast.success("Listing published successfully!");
-      navigate("/business-listings");
+      
+      // Invalidate queries to refresh the list immediately
+      await queryClient.invalidateQueries({ queryKey: ["business-listings"] });
+      
+      toast.success(data.is_published ? "Listing published successfully!" : "Listing saved as draft!");
+      
+      // Navigate to the published listing if published, otherwise to list
+      if (data.is_published && insertedData && insertedData[0]?.slug) {
+        navigate(`/business-listings/${insertedData[0].slug}`);
+      } else {
+        navigate("/business-listings");
+      }
     } catch (error: any) {
       console.error("Submission error:", error);
       toast.error(error.message || "Failed to create listing. Please try again.");
@@ -539,7 +551,7 @@ export const ListingForm = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="is_published">Publish Immediately</Label>
+                      <Label htmlFor="is_published">Publish</Label>
                       <p className="text-xs text-muted-foreground">
                         Make this listing visible to everyone
                       </p>
@@ -580,10 +592,10 @@ export const ListingForm = () => {
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Creating...
+                {formData.is_published ? "Publishing..." : "Saving..."}
               </>
             ) : (
-              "Create Listing"
+              formData.is_published ? "Publish Listing" : "Save as Draft"
             )}
           </Button>
         )}

@@ -17,6 +17,9 @@ const BusinessListings = () => {
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["business-listings", selectedCategory, sortBy],
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       let query = supabase
         .from("business_listings")
