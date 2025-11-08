@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import MDEditor from "@uiw/react-md-editor";
 
 interface BlogPostFormProps {
   post?: any;
@@ -127,29 +128,18 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
     setUploading(true);
     try {
       const imageUrl = await uploadImage(file);
-      const markdownImage = `\n![Image description](${imageUrl})\n`;
+      const markdownImage = `![Image description](${imageUrl})`;
       
-      // Insert at cursor position or append
-      const textarea = document.getElementById('content') as HTMLTextAreaElement;
-      if (textarea) {
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const newContent = content.substring(0, start) + markdownImage + content.substring(end);
-        setContent(newContent);
-        
-        // Reset cursor position
-        setTimeout(() => {
-          textarea.focus();
-          textarea.setSelectionRange(start + markdownImage.length, start + markdownImage.length);
-        }, 0);
-      } else {
-        setContent(content + markdownImage);
-      }
+      // Append to content
+      setContent(content + (content ? '\n\n' : '') + markdownImage);
       
       toast.success("Image uploaded and inserted!");
       e.target.value = ""; // Reset input
     } catch (error) {
-      console.error(error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Upload error:', error);
+      }
+      toast.error("Failed to upload image");
     } finally {
       setUploading(false);
     }
@@ -274,24 +264,22 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="content">Content * (Supports Markdown)</Label>
-        <Textarea
-          id="content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-          placeholder="Write your post content using Markdown formatting:&#10;&#10;# Heading 1&#10;## Heading 2&#10;### Heading 3&#10;&#10;**Bold text**&#10;*Italic text*&#10;&#10;[Link text](https://example.com)&#10;&#10;- List item 1&#10;- List item 2&#10;&#10;![Image](url)"
-          rows={12}
-          className="font-mono text-sm"
-        />
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>Use Markdown formatting: # for headings, **bold**, [links](url), - for lists</span>
+        <Label htmlFor="content">Content * (Rich Text Editor)</Label>
+        <div data-color-mode="light">
+          <MDEditor
+            value={content}
+            onChange={(val) => setContent(val || "")}
+            preview="live"
+            height={500}
+            visibleDragbar={false}
+            className="!bg-background !text-foreground"
+          />
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center mt-2">
           <Label htmlFor="inlineImage" className="cursor-pointer">
             <Button type="button" variant="outline" size="sm" disabled={uploading} asChild>
               <span>
-                {uploading ? "Uploading..." : "📎 Insert Image"}
+                {uploading ? "Uploading..." : "📎 Upload & Insert Image"}
               </span>
             </Button>
           </Label>
@@ -303,7 +291,7 @@ export function BlogPostForm({ post, onSuccess, onCancel }: BlogPostFormProps) {
             className="hidden"
           />
           <span className="text-xs text-muted-foreground">
-            Upload image to insert into content
+            Or paste formatted text directly - formatting will be preserved!
           </span>
         </div>
       </div>
