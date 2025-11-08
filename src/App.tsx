@@ -17,6 +17,9 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import BusinessListings from "./pages/BusinessListings";
+import BusinessListingDetail from "./pages/BusinessListingDetail";
+import AddBusinessListing from "./pages/AddBusinessListing";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,6 +49,9 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/business-listings" element={<BusinessListings />} />
+          <Route path="/business-listings/add" element={<AddBusinessListing />} />
+          <Route path="/business-listings/:slug" element={<BusinessListingDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

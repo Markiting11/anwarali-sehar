@@ -71,6 +71,102 @@ export type Database = {
         }
         Relationships: []
       }
+      business_listings: {
+        Row: {
+          address: string
+          amenities: string[] | null
+          business_hours: Json | null
+          category: string
+          city: string
+          contact_clicks: number | null
+          country: string | null
+          created_at: string | null
+          description: string
+          email: string | null
+          featured_image_url: string | null
+          gallery_images: string[] | null
+          id: string
+          is_featured: boolean | null
+          is_published: boolean | null
+          keywords: string[] | null
+          meta_description: string | null
+          meta_title: string | null
+          phone: string
+          postal_code: string | null
+          price_range: string | null
+          slug: string
+          state: string | null
+          title: string
+          updated_at: string | null
+          user_id: string | null
+          views_count: number | null
+          website: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          address: string
+          amenities?: string[] | null
+          business_hours?: Json | null
+          category: string
+          city: string
+          contact_clicks?: number | null
+          country?: string | null
+          created_at?: string | null
+          description: string
+          email?: string | null
+          featured_image_url?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          keywords?: string[] | null
+          meta_description?: string | null
+          meta_title?: string | null
+          phone: string
+          postal_code?: string | null
+          price_range?: string | null
+          slug: string
+          state?: string | null
+          title: string
+          updated_at?: string | null
+          user_id?: string | null
+          views_count?: number | null
+          website?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          address?: string
+          amenities?: string[] | null
+          business_hours?: Json | null
+          category?: string
+          city?: string
+          contact_clicks?: number | null
+          country?: string | null
+          created_at?: string | null
+          description?: string
+          email?: string | null
+          featured_image_url?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          keywords?: string[] | null
+          meta_description?: string | null
+          meta_title?: string | null
+          phone?: string
+          postal_code?: string | null
+          price_range?: string | null
+          slug?: string
+          state?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string | null
+          views_count?: number | null
+          website?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null

@@ -86,6 +86,12 @@ const Footer = () => {
                   Work Samples
                 </Link>
               </li>
+              <li>
+                <Link to="/business-listings" className="text-sm text-navbar-foreground/70 hover:text-primary transition-colors flex items-center gap-2 group">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/50 group-hover:bg-primary transition-colors"></span>
+                  Business Listings
+                </Link>
+              </li>
             </ul>
           </div>
 
