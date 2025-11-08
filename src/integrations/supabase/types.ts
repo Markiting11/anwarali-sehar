@@ -75,6 +75,9 @@ export type Database = {
         Row: {
           address: string
           amenities: string[] | null
+          approval_status: Database["public"]["Enums"]["approval_status"] | null
+          approved_at: string | null
+          approved_by: string | null
           business_hours: Json | null
           category: string
           city: string
@@ -94,6 +97,7 @@ export type Database = {
           phone: string
           postal_code: string | null
           price_range: string | null
+          rejection_reason: string | null
           slug: string
           state: string | null
           title: string
@@ -106,6 +110,11 @@ export type Database = {
         Insert: {
           address: string
           amenities?: string[] | null
+          approval_status?:
+            | Database["public"]["Enums"]["approval_status"]
+            | null
+          approved_at?: string | null
+          approved_by?: string | null
           business_hours?: Json | null
           category: string
           city: string
@@ -125,6 +134,7 @@ export type Database = {
           phone: string
           postal_code?: string | null
           price_range?: string | null
+          rejection_reason?: string | null
           slug: string
           state?: string | null
           title: string
@@ -137,6 +147,11 @@ export type Database = {
         Update: {
           address?: string
           amenities?: string[] | null
+          approval_status?:
+            | Database["public"]["Enums"]["approval_status"]
+            | null
+          approved_at?: string | null
+          approved_by?: string | null
           business_hours?: Json | null
           category?: string
           city?: string
@@ -156,6 +171,7 @@ export type Database = {
           phone?: string
           postal_code?: string | null
           price_range?: string | null
+          rejection_reason?: string | null
           slug?: string
           state?: string | null
           title?: string
@@ -224,6 +240,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      approval_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -352,6 +369,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      approval_status: ["pending", "approved", "rejected"],
     },
   },
 } as const

@@ -230,6 +230,7 @@ export const ListingForm = () => {
         meta_description: data.meta_description,
         keywords: keywordsArray,
         is_published: data.is_published,
+        approval_status: 'pending' as const,
       };
 
       console.log("Inserting listing:", listingData);
